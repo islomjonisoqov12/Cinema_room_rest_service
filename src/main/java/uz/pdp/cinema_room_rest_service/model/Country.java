@@ -5,11 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.UUID;
 
 
-@AllArgsConstructor @NoArgsConstructor @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity(name = "countries")
 public class Country {
 
@@ -24,8 +25,6 @@ public class Country {
     String description;
 
 //////////////////////////    <<<<<<<<<<<<<   Relation ship  >>>>>>>>>>>>>>>>\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-
 
 
 }
