@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +31,7 @@ public class Director {
     @ManyToMany
     @JoinTable(name = "movies_directors", joinColumns = @JoinColumn(name = "director_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
-    List<Movie> movies;
+    List<Movie> movies = new ArrayList<>();
 
     
 

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Time;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -55,19 +56,22 @@ public class Movie {
 
     @ManyToMany
     @JoinTable(name = "movies_countries", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "country_id"))
-    List<Country> countries;
+    List<Country> countries = new ArrayList<>();
 
     @ManyToMany
-    List<Director> directors;
+    List<Director> directors = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "movies_genres", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    List<Genre> genres;
+    List<Genre> genres = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "movies_actors", joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id"))
-    List<Actor> actors;
+    List<Actor> actors = new ArrayList<>();
+
+    @OneToMany(mappedBy = "movie")
+    List<MovieSession> sessions = new ArrayList<>();
 
 
 

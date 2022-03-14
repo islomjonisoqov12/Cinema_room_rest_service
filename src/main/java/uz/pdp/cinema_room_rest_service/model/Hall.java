@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +26,9 @@ public class Hall extends AbsEntity {
 
 
     @OneToMany(mappedBy = "hall")
-    List<Row> rows;
+    List<Row> rows = new ArrayList<>();
+
+    @OneToMany(mappedBy = "hall")
+    List<MovieSession> sessions = new ArrayList<>();
 
 }
