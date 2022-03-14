@@ -17,7 +17,7 @@ public class Actor {
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;
 
-    @Column(name = "full_name")
+    @Column(name = "full_name", nullable = false)
     String fullName;
 
     @Column(name = "date_of_birth")

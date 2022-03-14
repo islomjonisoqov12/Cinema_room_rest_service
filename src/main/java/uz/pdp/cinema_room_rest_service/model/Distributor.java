@@ -5,27 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-@Entity(name = "rows")
-public class Row {
 
+@AllArgsConstructor @NoArgsConstructor @Data
+@Entity(name = "distributors")
+public class Distributor {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;
 
     @Column(nullable = false)
-    int number;
+    String name;
 
-    @ManyToOne
-    Hall hall;
-
-    @OneToMany(mappedBy = "row")
-    List<Seat> seats;
-
-
+    @Column(columnDefinition = "text")
+    String description;
 }
