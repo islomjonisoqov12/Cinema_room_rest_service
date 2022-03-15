@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity(name = "pay_types")
-public class PayType {
+public class PayType extends AbsEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

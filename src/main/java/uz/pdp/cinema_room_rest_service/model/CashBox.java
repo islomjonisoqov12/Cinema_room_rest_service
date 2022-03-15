@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity(name = "cash_box")
-public class CashBox {
+public class CashBox extends AbsEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;

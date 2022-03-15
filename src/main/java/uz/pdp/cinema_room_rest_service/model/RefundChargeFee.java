@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity(name = "refund_charge_fees")
-public class RefundChargeFee {
+public class RefundChargeFee extends AbsEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

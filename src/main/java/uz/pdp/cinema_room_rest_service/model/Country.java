@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity(name = "countries")
-public class Country {
+public class Country extends AbsEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

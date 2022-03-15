@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @AllArgsConstructor @NoArgsConstructor @Data
 @Entity(name = "billing_infos")
-public class BillingInfo {
+public class BillingInfo extends AbsEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;

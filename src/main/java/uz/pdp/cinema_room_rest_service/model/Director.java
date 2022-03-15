@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity(name = "directors")
-public class Director {
+public class Director extends AbsEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,6 +33,10 @@ public class Director {
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
     List<Movie> movies = new ArrayList<>();
 
-    
 
+    public Director(UUID id, String fullName, String bio) {
+        this.id = id;
+        this.fullName = fullName;
+        this.bio = bio;
+    }
 }

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @AllArgsConstructor @NoArgsConstructor @Data
 @Entity(name = "distributors")
-public class Distributor {
+public class Distributor extends AbsEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;

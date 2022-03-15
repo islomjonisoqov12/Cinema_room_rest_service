@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity(name = "actors")
-public class Actor {
+public class Actor extends AbsEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;

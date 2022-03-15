@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @AllArgsConstructor @NoArgsConstructor @Data
 @Entity(name = "tickets")
-public class Ticket extends AbsEntity{
+public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,6 +22,7 @@ public class Ticket extends AbsEntity{
     @Column(nullable = false)
     Double price = 0.0;
 
+    @Enumerated(EnumType.STRING)
     TicketStatus status;
 
     @Column(nullable = false, name = "created_at")

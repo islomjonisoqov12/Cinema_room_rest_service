@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity(name = "purchase_histories")
-public class PurchaseHistory {
+public class PurchaseHistory extends AbsEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;

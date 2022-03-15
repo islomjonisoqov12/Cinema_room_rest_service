@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 
 @Entity(name = "seats")
-public class Seat {
+public class Seat extends AbsEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

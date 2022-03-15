@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 
 @Entity(name = "genres")
-public class Genre {
+public class Genre extends AbsEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

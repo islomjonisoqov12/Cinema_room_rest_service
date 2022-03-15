@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity(name = "rows")
-public class Row {
+public class Row extends AbsEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
