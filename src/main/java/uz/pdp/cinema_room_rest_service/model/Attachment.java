@@ -20,9 +20,9 @@ public class Attachment {
 
     @Column(nullable = false, name = "content_type")
     String contentType;
-
     @Column(nullable = false)
-    byte [] bytes;
+    long size;
+
 
 
 

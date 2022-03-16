@@ -5,27 +5,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-@Entity(name = "rows")
-public class Row extends AbsEntity{
-
+@AllArgsConstructor @NoArgsConstructor @Data
+@Entity(name = "carts")
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;
 
-    @Column(nullable = false)
-    int number;
+    @OneToOne
+    User user;
 
-    @ManyToOne
-    Hall hall;
-
-    @OneToMany(mappedBy = "row")
-    List<Seat> seats;
+    @OneToMany(mappedBy = "cart")
+    List<Ticket> tickets = new ArrayList<>();
 
 
 }

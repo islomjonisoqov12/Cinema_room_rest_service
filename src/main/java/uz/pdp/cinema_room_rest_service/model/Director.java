@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity(name = "directors")
-public class Director {
+public class Director extends AbsEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,8 +31,12 @@ public class Director {
     @ManyToMany
     @JoinTable(name = "movies_directors", joinColumns = @JoinColumn(name = "director_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
-    List<Movie> movies;
+    List<Movie> movies = new ArrayList<>();
 
-    
 
+    public Director(UUID id, String fullName, String bio) {
+        this.id = id;
+        this.fullName = fullName;
+        this.bio = bio;
+    }
 }

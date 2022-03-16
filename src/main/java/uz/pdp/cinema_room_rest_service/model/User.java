@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -33,4 +35,7 @@ public class User {
 
     @Column(columnDefinition = "text")
     String bio;
+
+    @OneToMany(mappedBy = "user")
+    List<BillingInfo> billingInfos = new ArrayList<>();
 }
