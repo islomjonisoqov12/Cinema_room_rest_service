@@ -2,6 +2,7 @@ package uz.pdp.cinema_room_rest_service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -13,29 +14,23 @@ import java.util.UUID;
 
 @AllArgsConstructor @NoArgsConstructor @Data
 @Entity(name = "movie_sessions")
-public class MovieSession extends AbsEntity{
+public class Afisha extends AbsEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID id;
 
-    @Column(nullable = false)
-    Date date;
-
-    @Column(nullable = false)
-    Time time;
-
-    @Column(name = "session_additional_fee_in_percent", nullable = false)
-    Double sessionAdditionalFeeInPercent = 0.0;
-
     @ManyToOne
     Movie movie;
 
-    @ManyToOne
-    Hall hall;
+    @Column(name = "is_active")
+    boolean isActive;
 
     @OneToMany(mappedBy = "session")
     List<Ticket> tickets = new ArrayList<>();
 
-
-
+    public Afisha(UUID id, Movie movie, boolean isActive) {
+        this.id = id;
+        this.movie = movie;
+        this.isActive = isActive;
+    }
 }
