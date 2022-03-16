@@ -7,4 +7,6 @@ import uz.pdp.cinema_room_rest_service.model.AttachmentContent;
 import java.util.UUID;
 
 public interface AttachmentContentRepository extends JpaRepository<AttachmentContent, UUID> {
+
+    AttachmentContent findByAttachment(Attachment attachment);
 }
