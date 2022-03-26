@@ -1,10 +1,49 @@
 package uz.pdp.cinema_room_rest_service.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import uz.pdp.cinema_room_rest_service.model.Hall;
+import org.springframework.data.jpa.repository.Query;
 import uz.pdp.cinema_room_rest_service.model.Ticket;
+import uz.pdp.cinema_room_rest_service.projection.TicketProjection;
 
 import java.util.UUID;
 
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
+    boolean existsBySeatIdAndMovieSessionId(UUID seatId,UUID sessionId);
+
+    @Query(nativeQuery = true,value = "select " +
+            "m.price +\n" +
+            "       m.price * pc.additional_fee_in_percentage +\n" +
+            "       st.session_additional_fee_in_percentage * m.price +" +
+            "       h.vip_additional_fee_in_percentage * m.price  \n" +
+            "          as ticketPrice\n" +
+            "from movie_sessions\n" +
+            "         join halls h on movie_sessions.hall_id = h.id\n" +
+            "         join hall_rows hr on h.id = hr.hall_id\n" +
+            "         join seats s on hr.id = s.row_id\n" +
+            "         join price_categories pc on s.price_category_id = pc.id\n" +
+            "         join movie_announcements ma on movie_sessions.movie_announcement_id = ma.id\n" +
+            "         join movies m on ma.movie_id = m.id\n" +
+            "         join session_times st on movie_sessions.start_time_id = st.id\n" +
+            "where movie_sessions.id = ?2 and s.id = ?1")
+   Double getPriceFromSeatIdAndSessionId(UUID seatId, UUID sessionId);
+
+    @Query(nativeQuery = true,value = "select cast(t.id as varchar)   as id,\n" +
+            "       hr.number               as rowNumber,\n" +
+            "       s.number                as seatNumber,\n" +
+            "       m.title                 as movieTitle,\n" +
+            "       t.price                 as price,\n" +
+            "       sd.date + st.start_time as startDate\n" +
+            "from tickets t\n" +
+            "         join carts c on t.cart_id = c.id\n" +
+            "         join users u on c.user_id = u.id\n" +
+            "         join movie_sessions ms on ms.id = t.movie_session_id\n" +
+            "         join seats s on t.seat_id = s.id\n" +
+            "         join movie_announcements ma on ms.movie_announcement_id = ma.id\n" +
+            "         join hall_rows hr on s.row_id = hr.id\n" +
+            "         join halls h on hr.hall_id = h.id\n" +
+            "         join movies m on ma.movie_id = m.id\n" +
+            "         join session_dates sd on ms.date_id = sd.id\n" +
+            "         join session_times st on ms.start_time_id = st.id\n" +
+            "where t.id = :ticketId")
+    TicketProjection getTicketByTicketId(UUID ticketId);
 }

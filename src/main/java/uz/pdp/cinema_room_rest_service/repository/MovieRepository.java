@@ -17,14 +17,22 @@ public interface MovieRepository extends JpaRepository<Movie, UUID> {
 
     @Query(value = "select cast(movies.id as varchar) as id," +
             " movies.title as title," +
-            " movies.time as duration," +
+            " movies.time as  duration," +
             " movies.release_date as releaseDate," +
             " movies.budget as budget, " +
             " movies.description as description," +
             " cast(a.id as varchar) as img," +
             " cast(a1.id as varchar) as trailer " +
-            " from  movies join attachments a on movies.poster_img = a.id" +
-            " join attachments a1 on a1.id = movies.trailer_video" +
+            " from  movies left join attachments a on movies.poster_img = a.id" +
+            " left join attachments a1 on a1.id = movies.trailer_video" +
             " where movies.id = :id", nativeQuery = true)
     List<MovieByIdProjection> getMovieByMovieId(UUID id);
+
+    @Query(value = "select cast(max(sp.price_seats) as double precision) from get_available_seat_prices_by_session_id(:id) as sp",nativeQuery = true)
+    Double getMaxPrice(UUID id);
+
+     @Query(value = "select cast(min(sp.price_seats) as double precision) from get_available_seat_prices_by_session_id(:id) as sp",nativeQuery = true)
+    Double getMinPrice(UUID id);
+
+
 }
