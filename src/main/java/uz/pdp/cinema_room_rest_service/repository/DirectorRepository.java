@@ -6,6 +6,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import uz.pdp.cinema_room_rest_service.model.Director;
 import uz.pdp.cinema_room_rest_service.model.Hall;
 import uz.pdp.cinema_room_rest_service.projection.ActorProjection;
+import uz.pdp.cinema_room_rest_service.projection.CastProjection;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,4 +22,7 @@ public interface DirectorRepository extends JpaRepository<Director, UUID> {
             "                 join movies m on m.id = md.movie_id where m.id = :id",
             nativeQuery = true)
     List<ActorProjection> getFindByMovieId(UUID id);
+
+    @Query(nativeQuery = true,value = "select cast(id as varchar) as id, full_name as fullName from directors")
+    List<CastProjection> getAllDirectors();
 }

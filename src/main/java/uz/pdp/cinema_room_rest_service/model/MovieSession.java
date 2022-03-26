@@ -2,35 +2,34 @@ package uz.pdp.cinema_room_rest_service.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 @AllArgsConstructor @NoArgsConstructor @Data
 @Entity(name = "movie_sessions")
-public class Afisha extends AbsEntity{
+public class ReservedHall {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     UUID id;
 
-    @ManyToOne
-    Movie movie;
+    @ManyToOne(fetch = FetchType.LAZY)
+    Hall hall;
 
-    @Column(name = "is_active")
-    boolean isActive;
+    @ManyToOne(fetch = FetchType.LAZY)
+    SessionDates date;
 
-    @OneToMany(mappedBy = "session")
-    List<Ticket> tickets = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    SessionTime startTime;
 
-    public Afisha(UUID id, Movie movie, boolean isActive) {
-        this.id = id;
-        this.movie = movie;
-        this.isActive = isActive;
-    }
+    @Column(columnDefinition = "time")
+    Time endTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    MovieSession movieSession;
+
+    @OneToMany(mappedBy = "reservedHall", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    List<Ticket> tickets;
 }
