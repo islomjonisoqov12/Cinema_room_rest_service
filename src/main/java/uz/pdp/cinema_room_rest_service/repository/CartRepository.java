@@ -30,7 +30,7 @@ public interface CartRepository extends JpaRepository<Cart, UUID> {
             "         join movies m on ma.movie_id = m.id\n" +
             "         join session_dates sd on ms.date_id = sd.id\n" +
             "         join session_times st on ms.start_time_id = st.id\n" +
-            "where u.id = :userId")
+            "where u.id = :userId and t.status <> 'PURCHASED'")
     List<TicketProjection> getUserCartTickets(UUID userId);
 
 
@@ -40,7 +40,10 @@ public interface CartRepository extends JpaRepository<Cart, UUID> {
             "       cast(u.id as varchar) as userId\n" +
             "from tickets t\n" +
             "         join carts c on t.cart_id = c.id\n" +
-            "         join users u on c.user_id = u.id\n" +
+            "         join users u on c.user_id = u.id\n " +
+            "         where u.id = :userId " +
             "group by u.id")
     CartProjection getUserCartById(UUID userId);
+
+    Cart findCartByUserId(UUID userId);
 }
