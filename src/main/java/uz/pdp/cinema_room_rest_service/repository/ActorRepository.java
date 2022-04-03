@@ -27,6 +27,6 @@ public interface ActorRepository extends JpaRepository<Actor, UUID> {
             "cast(a.id as varchar) as id," +
             "a.full_name as fullName," +
             "a.date_of_birth as dateOfBirth," +
-            "a.bio as bio  from actors a",nativeQuery = true)
+            "a.bio as bio  from actors a where a.full_name like concat('%',:search,'%')",nativeQuery = true)
     Page<ActorProjection> getAllActorsPage(Pageable pageable, String search);
 }
