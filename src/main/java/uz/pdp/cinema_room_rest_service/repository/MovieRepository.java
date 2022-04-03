@@ -8,6 +8,7 @@ import uz.pdp.cinema_room_rest_service.projection.MovieByIdProjection;
 import uz.pdp.cinema_room_rest_service.projection.MovieProjection;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface MovieRepository extends JpaRepository<Movie, UUID> {
@@ -34,5 +35,6 @@ public interface MovieRepository extends JpaRepository<Movie, UUID> {
      @Query(value = "select cast(min(sp.price_seats) as double precision) from get_available_seat_prices_by_session_id(:id) as sp",nativeQuery = true)
     Double getMinPrice(UUID id);
 
-
+     @Query(nativeQuery = true,value = "")
+    List<Map<String, Object>> getTopMovies(int size);
 }

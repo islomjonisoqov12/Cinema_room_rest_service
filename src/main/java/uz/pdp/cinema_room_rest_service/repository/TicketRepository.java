@@ -1,5 +1,7 @@
 package uz.pdp.cinema_room_rest_service.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import uz.pdp.cinema_room_rest_service.model.Ticket;
@@ -57,21 +59,21 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
 
     @Query(nativeQuery = true, value =
             "select not(t.status = 'PURCHASED'\n" +
-            "        AND st.start_time+sd.date > now()+'10 minute')\n" +
-            "from tickets t\n" +
-            "join movie_sessions ms on ms.id = t.movie_session_id\n" +
-            "join session_times st on ms.start_time_id = st.id\n" +
-            "join session_dates sd on ms.date_id = sd.id\n" +
-            "where t.id = :ticketId")
+                    "        AND st.start_time+sd.date > now()+'10 minute')\n" +
+                    "from tickets t\n" +
+                    "join movie_sessions ms on ms.id = t.movie_session_id\n" +
+                    "join session_times st on ms.start_time_id = st.id\n" +
+                    "join session_dates sd on ms.date_id = sd.id\n" +
+                    "where t.id = :ticketId")
     boolean isExpired(UUID ticketId);
 
-    @Query(nativeQuery = true,value = "select purchase_histories.intent_id from purchase_histories\n" +
+    @Query(nativeQuery = true, value = "select purchase_histories.intent_id from purchase_histories\n" +
             "join purchase_histories_tickets pht on purchase_histories.id = pht.purchase_history_id\n" +
             "join tickets t on pht.ticket_id = t.id\n" +
             "where t.id = :ticketId limit 1")
     String getPaymentIntentByTicketId(UUID ticketId);
 
-    @Query(nativeQuery = true,value ="select coalesce((\n" +
+    @Query(nativeQuery = true, value = "select coalesce((\n" +
             "                    select max(charge_fee_in_percentage)\n" +
             "                    from refund_charge_fees\n" +
             "                    where interval_in_minutes >\n" +
@@ -86,12 +88,23 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
             "where t.id = :ticketId\n")
     Double ticketRefundFeeInPer(UUID ticketId);
 
-    @Query(nativeQuery = true,value = "select sum(t.price) from tickets t\n" +
+    @Query(nativeQuery = true, value = "select sum(t.price) from tickets t\n" +
             "join movie_sessions ms on t.movie_session_id = ms.id\n" +
             "join session_dates sd on ms.date_id = sd.id\n" +
             "where sd.date between :startDate and :endDate")
     Double getTotalIncome(Date startDate, Date endDate);
 
-    @Query(nativeQuery = true,value = "select count(t.id) > 0 from tickets t where t.qr_code = :qrCode and t.status = 'PURCHASED' and t.movie_session_id = :sessionId")
+    @Query(nativeQuery = true, value = "select count(t.id) > 0 from tickets t where t.qr_code = :qrCode and t.status = 'PURCHASED' and t.movie_session_id = :sessionId")
     boolean checkTicket(String qrCode, UUID sessionId);
+
+    @Query(nativeQuery = true,
+            value = "select cast(created_at as date) as date , count(id) as count  from tickets \n" +
+                    "where created_at >=:startDate and created_at <= :endDate \n " +
+                    "group by cast(created_at as date) ")
+    Page<SoldResult> getTicketSoldAmountPerDay(Pageable pageable, Date startDate, Date endDate);
+
+    @Query(nativeQuery = true,
+            value = "select cast(created_at as date) as date , count(id) as count  from tickets\n" +
+                    "group by cast(created_at as date) ")
+    Page<SoldResult> getTicketSoldAmountPerDay(Pageable pageable);
 }
