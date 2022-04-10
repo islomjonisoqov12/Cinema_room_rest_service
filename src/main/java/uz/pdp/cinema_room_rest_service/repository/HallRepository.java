@@ -7,8 +7,7 @@ import uz.pdp.cinema_room_rest_service.projection.HallBusyDate;
 import uz.pdp.cinema_room_rest_service.projection.HallBusyTime;
 import uz.pdp.cinema_room_rest_service.projection.HallProjection;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +31,7 @@ public interface HallRepository extends JpaRepository<Hall, UUID> {
     List<HallProjection> getHallsBySessionId(UUID id, UUID sessionId);
 
 
-    @Query(nativeQuery = true,value = "select cast(h.id as varchar) as id,\n" +
+    @Query(nativeQuery = true,value = "select distinct cast(h.id as varchar) as id,\n" +
             "       sd.date               as date\n" +
             "from halls h\n" +
             "         join movie_sessions ms on h.id = ms.hall_id\n" +
@@ -44,7 +43,7 @@ public interface HallRepository extends JpaRepository<Hall, UUID> {
 
 
 
-    @Query(value = "select st.start_time as startTime,\n" +
+    @Query(value = "select distinct st.start_time as startTime,\n" +
             "       ms.end_time   as endTime\n" +
             "from halls h\n" +
             "         join movie_sessions ms on h.id = ms.hall_id\n" +

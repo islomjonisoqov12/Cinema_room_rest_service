@@ -1,8 +1,11 @@
 package uz.pdp.cinema_room_rest_service.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import uz.pdp.cinema_room_rest_service.model.MovieAnnouncement;
 import uz.pdp.cinema_room_rest_service.projection.MovieSessionProjection;
 import uz.pdp.cinema_room_rest_service.projection.SessionProjection;
@@ -23,8 +26,8 @@ public interface MovieAnnouncementRepository extends JpaRepository<MovieAnnounce
             "            cast(ms.id as varchar) as id,\n" +
             "            cast(m.id as varchar) as movieId,\n" +
             "            m.title as movieTitle, " +
-            "            cast(a.id as varchar) as imgId, " +
-            "            cast(a2.id as varchar) as videoId " +
+            "            cast(a.id as varchar) as imgId," +
+            "            m.status as  movieStatus       " +
             "            from movie_announcements ms\n" +
             "            left join movies m on m.id = ms.movie_id\n" +
             "            left join movie_sessions rh on ms.id = rh.movie_announcement_id\n" +
@@ -32,9 +35,12 @@ public interface MovieAnnouncementRepository extends JpaRepository<MovieAnnounce
             "            left join session_times st on rh.start_time_id = st.id\n " +
             "            left join attachments a on m.poster_img = a.id " +
             "            left join attachments a2 on a2.id = m.trailer_video " +
-            "            group by ms.id, m.id,m.title, a.id, a2.id"
+            "            where (case when not :expired then sd.date+st.start_time > now() else true end )and " +
+            "m.status = 'ACTIVE' OR M.status = 'SOON' or " +
+            "(case when :expired then m.status = 'PASSED' else false end) " +
+            "  group by ms.id, m.id,m.title, a.id, a2.id "
             , nativeQuery = true)
-    List<SessionProjection> getAllSession(PageRequest pageable);
+    Page<SessionProjection> getAllSession(Pageable pageable, @Param(value = "expired") boolean expired);
 
 
     @Query(value = "select " +
