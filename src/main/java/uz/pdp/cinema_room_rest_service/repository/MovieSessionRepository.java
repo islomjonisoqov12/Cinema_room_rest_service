@@ -3,11 +3,13 @@ package uz.pdp.cinema_room_rest_service.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import uz.pdp.cinema_room_rest_service.model.MovieSession;
+import uz.pdp.cinema_room_rest_service.model.Seat;
 
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface MovieSessionRepository extends JpaRepository<MovieSession, UUID> {
@@ -27,12 +29,15 @@ public interface MovieSessionRepository extends JpaRepository<MovieSession, UUID
 
 
     @Query(nativeQuery = true,value =
-            "select cast(ms.id as varchar) as                                                      id,\n" +
-                    "       h.name                 as                                                      \"hallName\",\n" +
-                    "       m.title                as                                                      \"movieTitle\",\n" +
-                    "       count(t.id)            as                                                      \"ticketCount\",\n" +
-                    "       sd.date                as                                                      \"startDate\",\n" +
-                    "       get_available_seat_count(ms.id) * 100 / get_available_seat_count(ms.id, false) \"busySeatsPersentage\"\n" +
+            "select cast(ms.id as varchar)                                       as id,\n" +
+                    "       h.name                                                       as \"hallName\",\n" +
+                    "       m.title                                                      as \"movieTitle\",\n" +
+                    "       count(distinct t.id)                                                  as \"ticketCount\",\n" +
+                    "       sd.date                                                      as \"startDate\",\n" +
+                    "       get_seat_count(ms.id)                    as \"availableSeatCount\",\n" +
+                    "       get_seat_count(ms.id, 'ALL')  as \"seatCount\",\n" +
+                    "       get_seat_count(ms.id) * 100 /\n" +
+                    "       get_seat_count(ms.id, 'ALL')  as \"availableSeatPercentage\"\n" +
                     "from movie_sessions ms\n" +
                     "         left join movie_announcements ma on ma.id = ms.movie_announcement_id\n" +
                     "         left join movies m on m.id = ma.movie_id\n" +

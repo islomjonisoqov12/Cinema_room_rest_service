@@ -1,16 +1,18 @@
 package uz.pdp.cinema_room_rest_service.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import uz.pdp.cinema_room_rest_service.model.Ticket;
 import uz.pdp.cinema_room_rest_service.projection.TicketProjection;
 
-import java.util.Date;
+import java.sql.Date;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
+
+    Optional<Ticket> findByQrCodeAndMovieSessionId(String qrCode, UUID movieSession_id);
 
     @Query(value = "select  count(distinct t.id)>0 from movie_sessions\n" +
             "join halls h on movie_sessions.hall_id = h.id\n" +
@@ -88,23 +90,78 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
             "where t.id = :ticketId\n")
     Double ticketRefundFeeInPer(UUID ticketId);
 
-    @Query(nativeQuery = true, value = "select sum(t.price) from tickets t\n" +
-            "join movie_sessions ms on t.movie_session_id = ms.id\n" +
-            "join session_dates sd on ms.date_id = sd.id\n" +
-            "where sd.date between :startDate and :endDate")
-    Double getTotalIncome(Date startDate, Date endDate);
+    /*
+    total income
+    total outcome
+     [
+     each announcement - pay for distributor amount
+    ]
+     */
+    @Query(nativeQuery = true,
+            value = "select sum(prs.income)             as \"totalIncome\",\n" +
+            "       sum(prs.outcome)            as \"totalOutcome\",\n" +
+            "       sum(prs.net)                as \"totalNet\",\n" +
+            "       cast(json_agg(prs) as text) as \"eachION\"\n" +
+            "from (select \"movieAnnouncementId\",\n" +
+            "             \"movieTitle\",\n" +
+            "             distributor,\n" +
+            "             sum(outcome) as outcome,\n" +
+            "             sum(income)  as income,\n" +
+            "             sum(net)     as net\n" +
+            "      from (select cast(ma.id as varchar)                                                                                as \"movieAnnouncementId\",\n" +
+            "                   m.title                                                                                               as \"movieTitle\",\n" +
+            "                   d.name                                                                                                as \"distributor\",\n" +
+            "                   coalesce((m.price * count(distinct t.id)) + (case when ph.refund then ph.total_amount else 0 end),\n" +
+            "                            0)                                                                                           as outcome,\n" +
+            "                   coalesce(sum(t.price), 0)                                                                             as income,\n" +
+            "                   coalesce(sum(t.price) -\n" +
+            "                            (m.price * count(distinct t.id) + case when ph.refund then ph.total_amount else 0 end),\n" +
+            "                            0)                                                                                           as net\n" +
+            "            from movie_announcements ma\n" +
+            "                     full join movie_sessions ms on ma.id = ms.movie_announcement_id\n" +
+            "                     full join movies m on ma.movie_id = m.id\n" +
+            "                     full join tickets t on ms.id = t.movie_session_id\n" +
+            "                     full join distributors d on m.distributed_by = d.id\n" +
+            "                     full join purchase_histories_tickets pht on t.id = pht.ticket_id\n" +
+            "                     full join purchase_histories ph on pht.purchase_history_id = ph.id\n" +
+            "            where (t.status = 'PURCHASED' or t.id is null or ph.refund)\n" +
+            "              and (case when :checkDate then ph.created_at between :startDate and :endDate else true end)\n" +
+            "            group by ma.id, m.title, m.price, d.name, ph.refund, ph.total_amount\n" +
+            "            order by net desc) as ins\n" +
+            "      group by \"movieAnnouncementId\", \"movieTitle\", distributor order by income desc) as prs")
+    Map<String, Object> getTotalIncomeOutcomeNet(Date startDate, Date endDate, boolean checkDate);
 
-    @Query(nativeQuery = true, value = "select count(t.id) > 0 from tickets t where t.qr_code = :qrCode and t.status = 'PURCHASED' and t.movie_session_id = :sessionId")
+    @Query(nativeQuery = true, value = "select count(t.id) > 0 from tickets t where t.qr_code = :qrCode and t.status = 'PURCHASED' and t.movie_session_id = :sessionId and not checked")
     boolean checkTicket(String qrCode, UUID sessionId);
 
     @Query(nativeQuery = true,
-            value = "select cast(created_at as date) as date , count(id) as count  from tickets \n" +
-                    "where created_at >=:startDate and created_at <= :endDate \n " +
-                    "group by cast(created_at as date) ")
-    Page<SoldResult> getTicketSoldAmountPerDay(Pageable pageable, Date startDate, Date endDate);
+            value = "select :page as page,\n" +
+                    "       :size as size,\n" +
+                    "       cast(json_agg(json_build_object('date', data.date, 'ticketCount', data.count)) as text) as \"tickets\",\n" +
+                    "       coalesce((select count(*) over ()\n" +
+                    "        from tickets\n" +
+                    "        where (created_at between :startDate and :endDate) or cast(created_at as date) = :startDate \n" +
+                    "        group by cast(created_at as date)\n" +
+                    "        limit 1),0)as \"totalElementCount\"\n" +
+                    "from (select cast(created_at as date) as date,\n" +
+                    "             count(id)                as count\n" +
+                    "      from tickets\n" +
+                    "      where (created_at between :startDate and :endDate) or cast(created_at as date) = :startDate \n" +
+                    "      group by date\n" +
+                    "      limit :size offset :size * :page) as data\n")
+    Map<String,Object> getTicketSoldAmountPerDay(Date startDate, Date endDate, int page, int size);
 
     @Query(nativeQuery = true,
-            value = "select cast(created_at as date) as date , count(id) as count  from tickets\n" +
-                    "group by cast(created_at as date) ")
-    Page<SoldResult> getTicketSoldAmountPerDay(Pageable pageable);
+            value = "select :page                                                                                      as page,\n" +
+                    "       :size                                                                                      as size,\n" +
+                    "       cast(json_agg(json_build_object('date', data.date, 'ticketCount', data.count)) as text) as \"tickets\",\n" +
+                    "       coalesce((select count(*) over ()\n" +
+                    "        from tickets" +
+                    "        group by cast(created_at as date) limit 1),0)                                               as \"totalElementCount\"\n" +
+                    "from (select cast(created_at as date) as date,\n" +
+                    "             count(id)                as count\n" +
+                    "      from tickets\n" +
+                    "      group by date\n" +
+                    "      limit :size offset :size * :page) as data")
+    Map<String,Object> getTicketSoldAmountPerDay(int page, int size);
 }
