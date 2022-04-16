@@ -4,8 +4,11 @@ package uz.pdp.cinema_room_rest_service.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity(name = "directors")
-public class Director extends AbsEntity{
+public class  Director extends AbsEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,8 +30,11 @@ public class Director extends AbsEntity{
     @Column(columnDefinition = "text")
     String bio;
 
+    @Column(columnDefinition = "date")
+    LocalDate dateOfBirth;
 
     @ManyToMany
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "movies_directors", joinColumns = @JoinColumn(name = "director_id"),
             inverseJoinColumns = @JoinColumn(name = "movie_id"))
     List<Movie> movies = new ArrayList<>();

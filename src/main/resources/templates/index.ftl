@@ -4,8 +4,51 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Countdown Timer</title>
-    <link rel="stylesheet" href="custom.css" />
-    <script src="jquery.countdown.min.js" defer></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap");
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-size: cover;
+            background-position: center center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+        }
+
+        h1 {
+            font-weight: normal;
+            font-size: 4rem;
+            margin-top: 5rem;
+        }
+
+        .countdown-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .big-text {
+            font-weight: bold;
+            font-size: 6rem;
+            line-height: 1;
+            margin: 1rem 2rem;
+        }
+
+        .countdown-el {
+            text-align: center;
+        }
+
+        .countdown-el span {
+            font-size: 1.3rem;
+        }
+    </style>
 </head>
 <body>
 <h1>End of Year 2023</h1>

@@ -13,13 +13,13 @@ import java.util.UUID;
 
 @AllArgsConstructor @NoArgsConstructor @Data
 @Entity(name = "session_times")
-public class SessionTimes {
+public class SessionTime {
     @Id
     @GeneratedValue
     UUID id;
 
     @Column(columnDefinition = "time")
-    Time start_time;
+    Time startTime;
 
     @Column(name = "session_additional_fee_in_percentage")
     double sessionAdditionalFeeInPercentage;

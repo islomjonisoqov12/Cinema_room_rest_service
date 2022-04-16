@@ -20,4 +20,13 @@ public class Distributor extends AbsEntity{
 
     @Column(columnDefinition = "text")
     String description;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    Attachment img;
+
+    public Distributor(UUID id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 }

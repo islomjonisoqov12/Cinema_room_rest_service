@@ -3,6 +3,7 @@ package uz.pdp.cinema_room_rest_service.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uz.pdp.cinema_room_rest_service.enums.TicketStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -28,14 +29,18 @@ public class Ticket {
     @Column(nullable = false, name = "created_at")
     LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(nullable = false)
+    boolean checked = false;
+
     @ManyToOne
-    MovieSession session;
+    MovieSession movieSession;
 
     @ManyToOne
     Seat seat;
 
     @ManyToOne
     Cart cart;
+
 
 
 }

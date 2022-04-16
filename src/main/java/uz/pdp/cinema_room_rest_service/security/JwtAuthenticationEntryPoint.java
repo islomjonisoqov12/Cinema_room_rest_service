@@ -1,4 +1,4 @@
-package uz.pdp.spring_boot_exam_b6_islomjon.security;
+package uz.pdp.cinema_room_rest_service.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

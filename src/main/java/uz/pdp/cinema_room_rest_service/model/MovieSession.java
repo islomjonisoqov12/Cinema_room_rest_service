@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 @AllArgsConstructor @NoArgsConstructor @Data
 @Entity(name = "movie_sessions")
-public class ReservedHall {
+public class MovieSession extends AbsEntity{
     @Id
     @GeneratedValue
     UUID id;
@@ -28,8 +28,8 @@ public class ReservedHall {
     Time endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    MovieSession movieSession;
+    MovieAnnouncement movieAnnouncement;
 
-    @OneToMany(mappedBy = "reservedHall", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "movieSession", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     List<Ticket> tickets;
 }

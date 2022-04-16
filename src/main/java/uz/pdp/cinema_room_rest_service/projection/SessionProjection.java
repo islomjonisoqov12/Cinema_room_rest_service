@@ -1,21 +1,36 @@
 package uz.pdp.cinema_room_rest_service.projection;
 
-import uz.pdp.cinema_room_rest_service.model.Hall;
-import uz.pdp.cinema_room_rest_service.model.Movie;
+import org.springframework.beans.factory.annotation.Value;
+import uz.pdp.cinema_room_rest_service.enums.MovieStatus;
 
-import java.sql.Time;
-import java.util.Date;
+import java.time.LocalDate;
 
-public interface SessionProjection {
+public interface SessionProjection{
 
     String getId();
 
-    Date getDate();
+    String getMovieId();
 
-    Time getTime();
+    String getMovieTitle();
 
-    Movie getMovie();
+    String getImgId();
 
-    Hall getHall();
+    MovieStatus getMovieStatus();
+
+    @Value("#{@movieAnnouncementRepository.getStartDate(target.id)}")
+    LocalDate getStartDate();
+
+    @Value("#{@movieAnnouncementRepository.getEndDate(target.id)}")
+    LocalDate getEndDate();
+
+    @Value("#{@movieRepository.getMinPrice(target.id)}")
+    Double getMinPrice();
+
+    @Value("#{@movieRepository.getMaxPrice(target.id)}")
+    Double getMaxPrice();
+
+
+
+
 
 }

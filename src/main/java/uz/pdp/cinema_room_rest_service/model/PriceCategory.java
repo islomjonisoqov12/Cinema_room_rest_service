@@ -29,5 +29,13 @@ public class PriceCategory extends AbsEntity {
     @OneToMany(mappedBy = "priceCategory")
     List<Seat> seats = new ArrayList<>();
 
-
+    public PriceCategory(String name, Double additionalFeeInPercentage) {
+        this.name = name;
+        this.additionalFeeInPercentage = additionalFeeInPercentage;
+    }
+    public PriceCategory(UUID id ,String name, Double additionalFeeInPercentage) {
+        this.id = id;
+        this.name = name;
+        this.additionalFeeInPercentage = additionalFeeInPercentage;
+    }
 }

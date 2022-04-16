@@ -21,4 +21,20 @@ public class CashBox extends AbsEntity{
 
     @Column(nullable = false)
     Double balance = 0.0;
+
+    public boolean addBalance(Double amount) {
+        if (amount>0) {
+            balance +=amount;
+            return true;
+        }
+        return false;
+    }
+
+    public String  minusBalance(Double amount) {
+        if(amount<balance && amount > 0){
+            balance-=amount;
+            return "success";
+        }else if(amount<=0) return "the amount must be greater then 0";
+        else return "cash box balance must be greater then the amount";
+    }
 }

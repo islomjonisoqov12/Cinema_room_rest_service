@@ -16,10 +16,4 @@ public interface MovieProjection {
 
     String getDescription();
 
-
-//    @Value("#{}")
-//    List<> getActors();
-
-
-
 }

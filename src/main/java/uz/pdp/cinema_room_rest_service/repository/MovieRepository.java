@@ -16,17 +16,17 @@ public interface MovieRepository extends JpaRepository<Movie, UUID> {
     @Query(value = "select cast(id as varchar) as id, title, time as duration, release_date as releaseDate, budget, description from movies", nativeQuery = true)
     List<MovieProjection> getMovies(PageRequest pageRequest);
 
-    @Query(value = "select cast(movies.id as varchar) as id," +
-            " movies.title as title," +
-            " movies.time as  duration," +
-            " movies.release_date as releaseDate," +
-            " movies.budget as budget, " +
-            " movies.description as description," +
-            " cast(a.id as varchar) as img," +
-            " cast(a1.id as varchar) as trailer " +
-            " from  movies left join attachments a on movies.poster_img = a.id" +
-            " left join attachments a1 on a1.id = movies.trailer_video" +
-            " where movies.id = :id", nativeQuery = true)
+    @Query(value = "select cast(movies.id as varchar) as id,\n" +
+            "       movies.title as title,\n" +
+            "       movies.time as  duration,\n" +
+            "       movies.release_date as releaseDate,\n" +
+            "       movies.budget as budget,\n" +
+            "       movies.description as description,\n" +
+            "       (select cast(id as varchar) from attachments join movies_poster_img mpi on attachments.id = mpi.poster_img_id where mpi.movies_id = movies.id) as img,\n" +
+            "       cast(a1.id as varchar) as trailer\n" +
+            "from  movies\n" +
+            "             left join attachments a1 on a1.id = movies.trailer_video\n" +
+            "where movies.id = :id", nativeQuery = true)
     List<MovieByIdProjection> getMovieByMovieId(UUID id);
 
     @Query(value = "select cast(max(sp.price_seats) as double precision) from get_available_seat_prices_by_session_id(:id) as sp",nativeQuery = true)
@@ -38,7 +38,7 @@ public interface MovieRepository extends JpaRepository<Movie, UUID> {
      @Query(nativeQuery = true,value = "select distinct\n" +
              "                cast(m.id as varchar)                                                                                           as id,\n" +
              "       m.title                                                                                                                  as title,\n" +
-             "       cast(m.poster_img as varchar)                                                                                            as \"imageId\",\n" +
+             "       (select cast(id as varchar) from attachments join movies_poster_img mpi on attachments.id = mpi.poster_img_id where mpi.movies_id = m.id)       as \"imageId\",\n" +
              "       count(t.id)                                                                                                              as \"purchasedTicketCount\",\n" +
              "       count(distinct ms.id)                                                                                                    as \"sessionsCount\",\n" +
              "       (select sum(ph3.total_amount) from purchase_histories ph3 where ph3.id = ph.id  and not ph3.refund)                      as \"total_amount\",\n" +

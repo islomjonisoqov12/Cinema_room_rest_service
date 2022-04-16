@@ -3,9 +3,13 @@ package uz.pdp.cinema_room_rest_service.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -21,8 +25,19 @@ public class Actor extends AbsEntity{
     String fullName;
 
     @Column(name = "date_of_birth")
-    Date dateOfBirth;
+    LocalDate dateOfBirth;
 
     @Column(columnDefinition = "text")
     String bio;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    Attachment img;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinTable(name = "movies_actors", joinColumns = @JoinColumn(name = "actor_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id"))
+    List<Actor> actors = new ArrayList<>();
+
+
 }

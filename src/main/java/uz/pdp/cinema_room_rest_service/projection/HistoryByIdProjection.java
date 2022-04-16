@@ -1,11 +1,12 @@
 package uz.pdp.cinema_room_rest_service.projection;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
 
-public interface HistoryProjection {
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
+public interface HistoryByIdProjection {
     String getId();
 
     String getStatus();
@@ -18,9 +19,9 @@ public interface HistoryProjection {
 
     String paymentName();
 
-//    @Value("#{@purchaseHistoryRepository.getPayTypeFeeAmount(target.totalAmount, target.id)}")
-//    double getPayTypeFeeAmount();
+    @Value("#{@purchaseHistoryRepository.getPayTypeFeeAmount(target.id)}")
+    double getPayTypeFeeAmount();
 
-//    @Value("#{@purchaseHistoryRepository.getTickets(target.id)}")
-//    List<TicketProjection> tickets();
+    @Value("#{@purchaseHistoryRepository.getTickets(target.id)}")
+    List<TicketProjection> tickets();
 }
