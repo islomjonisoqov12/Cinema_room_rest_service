@@ -1,4 +1,4 @@
-package uz.pdp.spring_boot_exam_b6_islomjon.security;
+package uz.pdp.cinema_room_rest_service.security;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import uz.pdp.spring_boot_exam_b6_islomjon.repository.UserRepository;
-import uz.pdp.spring_boot_exam_b6_islomjon.service.UserService;
+import uz.pdp.cinema_room_rest_service.repository.UserRepository;
+import uz.pdp.cinema_room_rest_service.service.AuthService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -22,7 +22,7 @@ public class JWTFilter extends OncePerRequestFilter {
     @Autowired
     UserRepository userRepository;
     @Autowired
-    UserService userService;
+    AuthService userService;
     @Autowired
     PasswordEncoder passwordEncoder;
 

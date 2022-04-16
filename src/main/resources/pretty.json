@@ -1,0 +1,28 @@
+{
+  "title": "Iron man 1",
+  "time": 125,
+  "price": 42.0,
+  "releaseDate": "2018-09-25",
+  "budget": 1200000.0,
+  "distributorShareInPercentage": 50.0,
+  "description": "Genius level intellect Proficient scientist and engineer Powered armor suit: Superhuman strength, speed, durability, agility, reflexes, and senses Supersonic flight Energy repulsor and missile projection Regenerative life support",
+  "distributor": "fa66e3a4-7348-41b5-9ffb-457cbe2a181d",
+  "countries": [
+    "aa1dc648-a053-4b2f-9254-d5ff2d68db02",
+    "5ec4c704-4515-434e-9fb5-7007120766f8"
+  ],
+  "genres": [
+    "ab83956a-ff58-4959-8f5a-e96ad1587090",
+    "745c85b6-c446-419b-89f7-0aeb3ed9fcd4"
+  ],
+  "actors": [
+    "24a780af-4344-4316-aac2-8f3518f99934",
+    "26d8dd3f-dfa4-42cb-8a84-1662ab2176ec",
+    "b9b96f93-a027-4d69-b67a-158cebd6c270",
+    "953a9390-dbe9-4a11-b1d5-96f4cf05c7c8"
+  ],
+  "directors": [
+    "bb3cc199-bc5e-4788-9748-87caf02a7e14",
+    "42e4509a-a0be-4561-b615-4255c09f3667"
+  ]
+}

@@ -23,7 +23,4 @@ public class Attachment {
     @Column(nullable = false)
     long size;
 
-
-
-
 }

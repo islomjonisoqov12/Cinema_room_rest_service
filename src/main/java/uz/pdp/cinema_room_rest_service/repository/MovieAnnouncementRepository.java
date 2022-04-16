@@ -23,43 +23,41 @@ public interface MovieAnnouncementRepository extends JpaRepository<MovieAnnounce
     List<MovieAnnouncement> findBYMovieId(UUID movieId);
 
     @Query(value = "select\n" +
-            "            cast(ms.id as varchar) as id,\n" +
-            "            cast(m.id as varchar) as movieId,\n" +
-            "            m.title as movieTitle, " +
-            "            cast(a.id as varchar) as imgId," +
-            "            m.status as  movieStatus       " +
-            "            from movie_announcements ms\n" +
-            "            left join movies m on m.id = ms.movie_id\n" +
-            "            left join movie_sessions rh on ms.id = rh.movie_announcement_id\n" +
-            "            left join session_dates sd on rh.date_id = sd.id\n" +
-            "            left join session_times st on rh.start_time_id = st.id\n " +
-            "            left join attachments a on m.poster_img = a.id " +
-            "            left join attachments a2 on a2.id = m.trailer_video " +
-            "            where (case when not :expired then sd.date+st.start_time > now() else true end )and " +
-            "m.status = 'ACTIVE' OR M.status = 'SOON' or " +
-            "(case when :expired then m.status = 'PASSED' else false end) " +
-            "  group by ms.id, m.id,m.title, a.id, a2.id "
-            , nativeQuery = true)
-    Page<SessionProjection> getAllSession(Pageable pageable, @Param(value = "expired") boolean expired);
-
-
-    @Query(value = "select " +
-            "       cast(ms.id as varchar) as id,\n" +
-            "       cast(m.id as varchar)  as movieId,\n" +
-            "       m.title                as movieTitle,\n" +
-            "       cast(a.id as varchar)  as imgId,\n" +
-            "       cast(a2.id as varchar) as videoId\n" +
+            "    cast(ms.id as varchar) as id,\n" +
+            "    cast(m.id as varchar) as movieId,\n" +
+            "    m.title as movieTitle,\n" +
+            "    (select cast(id as varchar) from attachments join movies_poster_img mpi on attachments.id = mpi.poster_img_id where mpi.movies_id = m.id limit 1) as imgId,\n" +
+            "    m.status as  movieStatus\n" +
             "from movie_announcements ms\n" +
             "         left join movies m on m.id = ms.movie_id\n" +
             "         left join movie_sessions rh on ms.id = rh.movie_announcement_id\n" +
             "         left join session_dates sd on rh.date_id = sd.id\n" +
             "         left join session_times st on rh.start_time_id = st.id\n" +
-            "         left join attachments a on m.poster_img = a.id\n" +
+            "         left join attachments a2 on a2.id = m.trailer_video\n" +
+            "where (case when not :expired then sd.date+st.start_time > now() else true end )and\n" +
+            "      m.status = 'ACTIVE' OR M.status = 'SOON' or\n" +
+            "    (case when :expired then m.status = 'PASSED' else false end)\n" +
+            "group by ms.id, m.id,m.title, a2.id"
+            , nativeQuery = true)
+    Page<SessionProjection> getAllSession(Pageable pageable, @Param(value = "expired") boolean expired);
+
+
+    @Query(value = "select\n" +
+            "    cast(ms.id as varchar) as id,\n" +
+            "    cast(m.id as varchar)  as movieId,\n" +
+            "    m.title                as movieTitle,\n" +
+            "    (select cast(id as varchar) from attachments join movies_poster_img mpi on attachments.id = mpi.poster_img_id where mpi.movies_id = m.id limit 1)  as imgId,\n" +
+            "    cast(a2.id as varchar) as videoId\n" +
+            "from movie_announcements ms\n" +
+            "         left join movies m on m.id = ms.movie_id\n" +
+            "         left join movie_sessions rh on ms.id = rh.movie_announcement_id\n" +
+            "         left join session_dates sd on rh.date_id = sd.id\n" +
+            "         left join session_times st on rh.start_time_id = st.id\n" +
             "         left join attachments a2 on a2.id = m.trailer_video\n" +
             "         left join movie_sessions rs on rs.movie_announcement_id = ms.id\n" +
             "         join halls h on rh.hall_id = h.id\n" +
             "where ms.id = :id\n" +
-            "group by ms.id, m.title, m.id, a.id, a2.id", nativeQuery = true)
+            "group by ms.id, m.title, m.id, a2.id", nativeQuery = true)
     MovieSessionProjection getSessionById(UUID id);
 
 

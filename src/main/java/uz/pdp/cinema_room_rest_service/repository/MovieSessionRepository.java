@@ -6,6 +6,7 @@ import uz.pdp.cinema_room_rest_service.model.MovieSession;
 import uz.pdp.cinema_room_rest_service.model.Seat;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +22,10 @@ public interface MovieSessionRepository extends JpaRepository<MovieSession, UUID
                     "         left join movie_sessions ms on tickets.movie_session_id = ms.id\n" +
                     "         left join movie_announcements ma on ms.movie_announcement_id = ma.id\n" +
                     "         left join movies m on ma.movie_id = m.id\n" +
-                    "         left join attachments a on m.poster_img = a.id\n" +
+                    "         left join movies_poster_img mpi on m.id = mpi.movies_id\n" +
+                    "         left join attachments a on mpi.poster_img_id = a.id\n" +
                     "         left join attachment_contents ac on a.id = ac.attachment_id\n" +
-                    "where tickets.id = :ticketId")
+                    "where tickets.id = :ticketId limit 1")
     byte[] getAttachmentByTicketId(UUID ticketId);
 
 
@@ -74,4 +76,11 @@ public interface MovieSessionRepository extends JpaRepository<MovieSession, UUID
             "           or st.start_time >= :startTime and end_time <= :endTime)) --///            ---- start ---- end ----\n" +
             "  and h.id = :hallId")
     Map<String, Object> hasAnySession(LocalDate date, Time startTime, Time endTime, UUID hallId);
+
+    @Query(value = "select cast(movie_sessions.id as varchar) as id\n" +
+            "    from movie_sessions\n" +
+            "             join session_dates sd on movie_sessions.date_id = sd.id\n" +
+            "             join session_times st on movie_sessions.start_time_id = st.id\n" +
+            "    where (sd.date + st.start_time) between :start and :end", nativeQuery = true)
+    List<UUID> deleteByDateTime(Timestamp start, Timestamp end);
 }

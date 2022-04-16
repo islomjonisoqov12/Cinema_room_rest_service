@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity(name = "rows")
+@Entity(name = "hall_rows")
 public class Row extends AbsEntity{
 
     @Id
@@ -25,7 +26,15 @@ public class Row extends AbsEntity{
     Hall hall;
 
     @OneToMany(mappedBy = "row")
-    List<Seat> seats;
+    List<Seat> seats = new ArrayList<>();
 
+    public Row(UUID id, int number, Hall hall) {
+        this.id = id;
+        this.number = number;
+        this.hall = hall;
+    }
 
+    public void addSeats(Seat seat) {
+        seats.add(seat);
+    }
 }

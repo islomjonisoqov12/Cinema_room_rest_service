@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.sql.Time;
 import java.time.Duration;
 import java.util.UUID;
 @AllArgsConstructor
@@ -18,6 +19,6 @@ public class PurchaseWaitingTime {
     UUID id;
 
     @Column(columnDefinition = "time")
-    Duration time;
+    Time time;
 
 }

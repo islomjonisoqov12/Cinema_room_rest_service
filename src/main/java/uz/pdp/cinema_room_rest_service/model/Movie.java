@@ -3,11 +3,14 @@ package uz.pdp.cinema_room_rest_service.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import uz.pdp.cinema_room_rest_service.enums.MovieStatus;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,14 +25,14 @@ public class Movie extends AbsEntity{
     @Column(nullable = false)
     String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "time")
     Time time;
 
     @Column(nullable = false)
     Double price = 0.0;
 
-    @Column(nullable = false, name = "releaseDate")
-    Date releaseData;
+    @Column(nullable = false, name = "releaseDate",columnDefinition = "date")
+    LocalDate releaseData;
 
     @Column(nullable = false)
     Double budget;
@@ -40,42 +43,50 @@ public class Movie extends AbsEntity{
     @Column(columnDefinition = "text")
     String description;
 
+    @Enumerated(EnumType.STRING)
+    MovieStatus status;
 
+
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "trailer_video")
     @OneToOne(cascade = CascadeType.ALL)
     Attachment trailerVideo;
 
-    @JoinColumn(name = "poster_img")
-    @OneToOne(cascade = CascadeType.ALL)
-    Attachment posterImg;
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    List<Attachment> posterImg = new ArrayList<>();
+
 
     @JoinColumn(name = "distributed_by")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     Distributor distributedBy;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "movies_countries", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "country_id"))
     List<Country> countries = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(name = "movies_directors", joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "director_id"))
     List<Director> directors = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "movies_genres", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
     List<Genre> genres = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "movies_actors", joinColumns = @JoinColumn(name = "movie_id"),
             inverseJoinColumns = @JoinColumn(name = "actor_id"))
     List<Actor> actors = new ArrayList<>();
 
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
-    List<MovieSession> sessions = new ArrayList<>();
+    List<MovieAnnouncement> sessions = new ArrayList<>();
 
 
-    public Movie(UUID id, String title, Time time, Double price, Date releaseData, Double budget, Double distributorShareInPercentage, String description, Attachment trailerVideo, Attachment posterImg, Distributor distributedBy, List<Country> countries, List<Director> directors, List<Genre> genres, List<Actor> actors) {
+    public Movie(UUID id, String title, Time time, Double price, LocalDate releaseData, Double budget, Double distributorShareInPercentage, String description, Attachment trailerVideo, List<Attachment> posterImg, Distributor distributedBy, List<Country> countries, List<Director> directors, List<Genre> genres, List<Actor> actors) {
         this.id = id;
         this.title = title;
         this.time = time;
@@ -84,6 +95,24 @@ public class Movie extends AbsEntity{
         this.budget = budget;
         this.distributorShareInPercentage = distributorShareInPercentage;
         this.description = description;
+        this.trailerVideo = trailerVideo;
+        this.posterImg = posterImg;
+        this.distributedBy = distributedBy;
+        this.countries = countries;
+        this.directors = directors;
+        this.genres = genres;
+        this.actors = actors;
+    }
+    public Movie(UUID id, String title, Time time, Double price, LocalDate releaseData, Double budget, Double distributorShareInPercentage, String description,MovieStatus status, Attachment trailerVideo, List<Attachment> posterImg, Distributor distributedBy, List<Country> countries, List<Director> directors, List<Genre> genres, List<Actor> actors) {
+        this.id = id;
+        this.title = title;
+        this.time = time;
+        this.price = price;
+        this.releaseData = releaseData;
+        this.budget = budget;
+        this.distributorShareInPercentage = distributorShareInPercentage;
+        this.description = description;
+        this.status = status;
         this.trailerVideo = trailerVideo;
         this.posterImg = posterImg;
         this.distributedBy = distributedBy;

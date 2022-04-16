@@ -19,6 +19,10 @@ public class PayType extends AbsEntity{
     @Column(nullable = false)
     String name;
 
+    Double feeInPer;
+
+    Double feeInAmount;
+
     @OneToOne
     Attachment logo;
 

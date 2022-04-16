@@ -6,6 +6,8 @@ import uz.pdp.cinema_room_rest_service.model.SessionTime;
 import uz.pdp.cinema_room_rest_service.projection.SessionTimesProjection;
 
 import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,4 +28,14 @@ public interface SessionTimesRepository extends JpaRepository<SessionTime, UUID>
     List<SessionTimesProjection> getTimesBySessionIdAndHallId(UUID hallId, UUID sessionId);
 
     Optional<SessionTime> findByStartTime(Time startTime);
+
+    @Query(nativeQuery = true,
+            value = "select session_additional_fee_in_percentage from session_times\n" +
+            "where start_time>:startTime\n" +
+            "order by start_time limit 1")
+    double findAdditionalFeeByTime(Time startTime);
+
+    @Query(nativeQuery = true,
+    value = "select time+:startTime+cast(:startDate as date) from movies where id = :movieId")
+    Timestamp findEndTimeByMovieIdAndStartDateTime(UUID movieId, Time startTime, LocalDate startDate);
 }

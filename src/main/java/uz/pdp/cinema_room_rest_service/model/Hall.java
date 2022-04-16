@@ -28,7 +28,9 @@ public class Hall extends AbsEntity {
     @OneToMany(mappedBy = "hall")
     List<Row> rows = new ArrayList<>();
 
-    @OneToMany(mappedBy = "hall")
-    List<MovieSession> sessions = new ArrayList<>();
 
+    public Hall(String name, Double vipAdditionalFeeInPercentage) {
+        this.name = name;
+        this.vipAdditionalFeeInPercentage = vipAdditionalFeeInPercentage;
+    }
 }

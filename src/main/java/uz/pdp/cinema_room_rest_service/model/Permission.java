@@ -4,23 +4,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.time.LocalDate;
-import java.sql.Date;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "session_dates")
-public class SessionDates {
+@Data
+@Entity(name = "permissions")
+public class Permission {
+
     @Id
     @GeneratedValue
     UUID id;
 
-    @Column(columnDefinition = "date")
-    LocalDate date;
+    @NotBlank
+    @NotNull
+    @NotEmpty
+    String name;
 }

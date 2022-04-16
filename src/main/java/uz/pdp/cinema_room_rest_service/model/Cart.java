@@ -3,6 +3,7 @@ package uz.pdp.cinema_room_rest_service.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,6 +22,5 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart")
     List<Ticket> tickets = new ArrayList<>();
-
 
 }

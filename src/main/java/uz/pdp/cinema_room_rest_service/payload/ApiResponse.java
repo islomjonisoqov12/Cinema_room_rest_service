@@ -15,4 +15,7 @@ import lombok.NoArgsConstructor;
 
     private Object data;
 
+    public ApiResponse(Object data) {
+        this.data = data;
+    }
 }

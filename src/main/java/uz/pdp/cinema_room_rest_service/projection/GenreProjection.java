@@ -1,7 +1,8 @@
 package uz.pdp.cinema_room_rest_service.projection;
 
-public interface DirectorProjection {
+public interface GenreProjection {
+
     String getId();
 
-//    String getFu
+    String getName();
 }
