@@ -1,6 +1,5 @@
 package uz.pdp.cinema_room_rest_service.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
